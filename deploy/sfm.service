@@ -1,0 +1,18 @@
+[Unit]
+Description=Sistema de Fiscalização Minerária (SFM) - Servidor WSGI Waitress
+After=network.target postgresql.service
+
+[Service]
+Type=simple
+User=sfm
+Group=sfm
+WorkingDirectory=/var/www/sfm
+EnvironmentFile=/var/www/sfm/.env
+ExecStart=/var/www/sfm/.venv/bin/python deploy/servidor_producao.py
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

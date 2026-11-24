@@ -1,0 +1,33 @@
+seu-dominio.com.br {
+    encode gzip zstd
+
+    header {
+        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "DENY"
+        Referrer-Policy "strict-origin-when-cross-origin"
+        Permissions-Policy "geolocation=(), camera=(), microphone=()"
+        -Server
+    }
+
+    handle /static/* {
+        root * /var/www/sfm/app/views
+        file_server
+        header Cache-Control "public, max-age=86400"
+    }
+
+    handle {
+        reverse_proxy 127.0.0.1:8000 {
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+        }
+    }
+
+    log {
+        output file /var/log/caddy/sfm_access.log {
+            roll_size 50mb
+            roll_keep 10
+        }
+    }
+}

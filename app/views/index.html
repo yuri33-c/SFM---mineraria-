@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Fiscalização Minerária — Parauapebas (PA)</title>
+    <link rel="stylesheet" href="/static/css/style.css?v=8.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+</head>
+<body>
+
+    <!-- TOPBAR INSTITUCIONAL -->
+    <header class="topbar">
+        <div class="topbar-inner">
+            <div class="brand">
+                <span class="brand-badge">SFM</span>
+                <div class="brand-info">
+                    <h1 class="brand-title">Sistema de Fiscalização Minerária</h1>
+                    <span class="brand-subtitle">Tema 10 · Fiscalização de lavra fora da poligonal autorizada</span>
+                </div>
+            </div>
+
+            <nav class="nav-menu">
+                <a href="/sistema" class="nav-item active">Ambiente Operacional</a>
+                <a href="/" class="nav-item">Apresentação</a>
+                <a href="#secao-mapa" class="nav-item nav-anchor">Mapa</a>
+                <a href="#secao-consulta" class="nav-item nav-anchor">Consulta</a>
+                <a href="#secao-metodologia" class="nav-item nav-anchor">Metodologia</a>
+            </nav>
+
+            <div class="topbar-meta">
+                <span class="tag tag-mun" id="badge-municipio">Parauapebas / PA · 1505536</span>
+                <span class="tag tag-status" id="badge-banco">PostGIS: Conectando...</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="main-container">
+
+        <!-- SUB-BARRA DE CONTEXTO TERRITORIAL -->
+        <section class="context-bar">
+            <div class="context-item">
+                <span class="context-label">Área de Estudo:</span>
+                <strong class="context-val">Município de Parauapebas (PA)</strong>
+            </div>
+            <div class="context-sep">·</div>
+            <div class="context-item">
+                <span class="context-label">Área IBGE:</span>
+                <span class="context-val">6.885,87 km²</span>
+            </div>
+            <div class="context-sep">·</div>
+            <div class="context-item">
+                <span class="context-label">Datum Oficial:</span>
+                <span class="context-val">SIRGAS 2000 (EPSG:4674) / Proj. UTM 22S (EPSG:31982)</span>
+            </div>
+        </section>
+
+        <!-- CARDS DE INDICADORES (KPIs) -->
+        <section class="kpi-grid">
+            <article class="card kpi-card border-slate">
+                <div class="kpi-header">
+                    <span class="kpi-label">Origem dos Dados ANM</span>
+                    <span class="kpi-pill">Base Estadual</span>
+                </div>
+                <div class="kpi-number" id="kpi-pa-total">24.445</div>
+                <div class="kpi-desc" id="kpi-pa-validas">Cadastros estaduais para recorte municipal</div>
+            </article>
+
+            <article class="card kpi-card border-emerald">
+                <div class="kpi-header">
+                    <span class="kpi-label">Processos em Parauapebas</span>
+                    <span class="kpi-pill pill-emerald">Incidentes</span>
+                </div>
+                <div class="kpi-number text-emerald" id="kpi-mun-processos">349</div>
+                <div class="kpi-desc" id="kpi-mun-fases">Fases administrativas: 10 distintas</div>
+            </article>
+
+            <article class="card kpi-card border-blue">
+                <div class="kpi-header">
+                    <span class="kpi-label">Área Territorial Titulada</span>
+                    <span class="kpi-pill pill-blue">Território</span>
+                </div>
+                <div class="kpi-number text-blue" id="kpi-mun-area-ha">431.912,08 ha</div>
+                <div class="kpi-desc" id="kpi-mun-area-detalhe">Área única sem sobreposição · 62,72% do município</div>
+            </article>
+
+            <article class="card kpi-card border-amber">
+                <div class="kpi-header">
+                    <span class="kpi-label">Sensoriamento Remoto</span>
+                    <span class="kpi-pill pill-amber">MapBiomas</span>
+                </div>
+                <div class="kpi-number text-amber" id="kpi-mapbiomas-status">Aguardando Dados</div>
+                <div class="kpi-desc">Coleção 11 · Substância Minerada</div>
+            </article>
+        </section>
+
+        <!-- SEÇÃO: MAPA CARTOGRÁFICO -->
+        <section class="card section-map" id="secao-mapa">
+            <div class="card-header map-header">
+                <div class="header-titles">
+                    <h2>Visualização Cartográfica Territorial</h2>
+                    <span class="header-subtitle" id="map-subtitle">Carregando poligonais e limites territoriais...</span>
+                </div>
+                <div class="map-controls-top">
+                    <button type="button" class="btn btn-secondary btn-sm" id="btn-ajustar-zoom">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+                        Enquadrar Município
+                    </button>
+                </div>
+            </div>
+
+            <div id="map" class="map-viewport"></div>
+
+            <div class="map-bar">
+                <div class="map-legend">
+                    <span class="legend-caption">Convenção Cartográfica:</span>
+                    <span class="legend-badge"><span class="bullet bullet-lavra"></span> Amparo para Lavra / Concessão</span>
+                    <span class="legend-badge"><span class="bullet bullet-pesquisa"></span> Pesquisa / Requerimento Preliminar</span>
+                    <span class="legend-badge"><span class="bullet bullet-limite"></span> Limite Municipal de Parauapebas (IBGE)</span>
+                </div>
+                <div class="map-toggles">
+                    <label class="toggle-item">
+                        <input type="checkbox" id="check-camada-limite" checked>
+                        <span>Limite Municipal</span>
+                    </label>
+                    <label class="toggle-item">
+                        <input type="checkbox" id="check-camada-processos" checked>
+                        <span>Poligonais ANM</span>
+                    </label>
+                </div>
+                <div class="map-disclaimer">
+                    <strong>Aviso Cartográfico:</strong> As imagens de satélite e camadas cartográficas constituem suporte para inspeção visual e triagem técnica preliminar; não representam monitoramento em tempo real nem constituem declaração jurídica de irregularidade sem a devida vistoria presencial dos órgãos competentes.
+                </div>
+            </div>
+        </section>
+
+        <!-- SEÇÃO: CONSULTA E FILTROS -->
+        <section class="card section-search" id="secao-consulta">
+            <div class="card-header">
+                <div>
+                    <h2>Consultar Processos Minerários</h2>
+                    <span class="header-subtitle">Filtragem espacial e tabular sobre os processos da ANM em Parauapebas</span>
+                </div>
+                <div class="header-actions">
+                    <button type="button" class="btn btn-secondary btn-sm" id="btn-toggle-filtros">Filtros Avançados ▼</button>
+                    <button type="button" class="btn btn-ghost btn-sm" id="btn-limpar-filtros">Limpar</button>
+                </div>
+            </div>
+
+            <form class="search-form-body" id="form-consulta" onsubmit="return false;">
+                <div class="search-primary-row">
+                    <div class="field-wrap flex-grow">
+                        <label for="campo-termo">Pesquisa Rápida</label>
+                        <input type="text" id="campo-termo" placeholder="Digite número do processo, titular ou substância...">
+                    </div>
+                    <div class="field-btn">
+                        <button type="button" class="btn btn-primary" id="btn-executar-busca">Consultar</button>
+                    </div>
+                </div>
+
+                <div class="filters-drawer" id="painel-filtros-avancados" style="display: none;">
+                    <div class="form-grid">
+                        <div class="field-wrap">
+                            <label for="campo-fase">Fase Administrativa</label>
+                            <select id="campo-fase">
+                                <option value="">Todas as fases</option>
+                            </select>
+                        </div>
+                        <div class="field-wrap">
+                            <label>Abrangência Territorial</label>
+                            <div class="fixed-scope-badge">
+                                <span class="scope-dot"></span>
+                                <strong>Área de estudo: Parauapebas — PA</strong>
+                                <span class="scope-ibge">(IBGE 1505536)</span>
+                            </div>
+                        </div>
+                        <div class="field-wrap">
+                            <label for="campo-titular">Titular Outorgado</label>
+                            <input type="text" id="campo-titular" placeholder="Ex.: Vale S.A., Cooperativa...">
+                        </div>
+                        <div class="field-wrap">
+                            <label for="campo-substancia">Substância Mineral</label>
+                            <input type="text" id="campo-substancia" placeholder="Ex.: Minério de Ferro, Ouro, Cobre...">
+                        </div>
+                        <div class="field-wrap">
+                            <label for="campo-processo">Número do Processo</label>
+                            <input type="text" id="campo-processo" placeholder="Ex.: 850.123/2010">
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </section>
+
+        <!-- SEÇÃO: TABELA DE RESULTADOS -->
+        <section class="card section-table">
+            <div class="card-header table-header">
+                <div>
+                    <h2>Registros de Processos Minerários</h2>
+                    <span class="header-subtitle" id="table-subtitle">Clique em uma linha para ver detalhes e localizar o polígono no mapa</span>
+                </div>
+                <span class="counter-badge" id="table-counter">Carregando processos...</span>
+            </div>
+
+            <!-- PAINEL DE DETALHES DO PROCESSO SELECIONADO -->
+            <div class="detail-box" id="painel-detalhe-processo" style="display: none;">
+                <div class="detail-header">
+                    <span class="detail-tag">PROCESSO SELECIONADO</span>
+                    <button type="button" class="btn-close" id="btn-fechar-detalhe" title="Fechar detalhes">✕</button>
+                </div>
+                <div class="detail-grid">
+                    <div class="detail-col">
+                        <span class="det-label">Número do Processo</span>
+                        <strong class="det-val text-brand" id="det-processo">—</strong>
+                        <span class="det-label">Titular Cadastrado</span>
+                        <span class="det-val" id="det-titular">—</span>
+                        <span class="det-label">Substância Mineral</span>
+                        <span class="det-val" id="det-substancia">—</span>
+                    </div>
+                    <div class="detail-col">
+                        <span class="det-label">Fase Administrativa</span>
+                        <span class="det-val" id="det-fase">—</span>
+                        <span class="det-label">Amparo para Lavra</span>
+                        <span class="det-val" id="det-amparo">—</span>
+                        <span class="det-label">Último Evento</span>
+                        <span class="det-val" id="det-evento">—</span>
+                    </div>
+                    <div class="detail-col">
+                        <span class="det-label">Área no Município</span>
+                        <strong class="det-val" id="det-area-mun">—</strong>
+                        <span class="det-label">Área Original ANM</span>
+                        <span class="det-val" id="det-area-orig">—</span>
+                        <span class="det-label">Tipo de Recorte</span>
+                        <span class="det-val" id="det-recorte">—</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-wrap">
+                <table class="app-table">
+                    <thead>
+                        <tr>
+                            <th>Processo</th>
+                            <th>Fase Administrativa</th>
+                            <th>Titular Outorgado</th>
+                            <th>Substância</th>
+                            <th>Área Mun. (ha)</th>
+                            <th>Área Orig. (ha)</th>
+                            <th>Amparo Lavra</th>
+                            <th>Tipo Recorte</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabela-processos-corpo">
+                        <tr>
+                            <td colspan="8" class="table-empty">Carregando processos da base PostgreSQL / PostGIS...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="table-footer">
+                <span class="pagination-info" id="pagination-info">Mostrando 0 de 0 processos</span>
+                <div class="pagination-actions">
+                    <button type="button" class="btn btn-secondary btn-sm" id="btn-pag-anterior" disabled>← Anterior</button>
+                    <span class="page-tag" id="pag-indicador">Página 1</span>
+                    <button type="button" class="btn btn-secondary btn-sm" id="btn-pag-proximo" disabled>Próximo →</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEÇÃO: METODOLOGIA TEMA 10 -->
+        <section class="card section-methodology" id="secao-metodologia">
+            <div class="card-header">
+                <div>
+                    <h2>Fundamentação Técnica e Metodológica · Tema 10</h2>
+                    <span class="header-subtitle">Fiscalização de lavra fora da poligonal autorizada</span>
+                </div>
+            </div>
+
+            <div class="methodology-content">
+                <div class="categories-row">
+                    <div class="cat-card cat-border-red">
+                        <div class="cat-pill pill-red">Categoria A</div>
+                        <h3>Área minerada fora da poligonal</h3>
+                        <p>Atividade de extração mapeada por sensoriamento remoto sem correspondência com nenhuma poligonal de título minerário outorgado válido.</p>
+                    </div>
+
+                    <div class="cat-card cat-border-amber">
+                        <div class="cat-pill pill-amber">Categoria B</div>
+                        <h3>Incompatibilidade de fase</h3>
+                        <p>Atividade minerária sobre processo cuja fase administrativa normativa não autoriza extração (ex.: Requerimento ou Autorização de Pesquisa).</p>
+                    </div>
+
+                    <div class="cat-card cat-border-slate">
+                        <div class="cat-pill pill-slate">Categoria C</div>
+                        <h3>Mineração sem título identificado</h3>
+                        <p>Cicatriz de extração localizada em terras devolutas, públicas ou áreas sem nenhum processo cadastrado na base oficial da ANM.</p>
+                    </div>
+                </div>
+
+                <div class="technical-notes">
+                    <div class="note-box">
+                        <h4>Integração MapBiomas Coleção 11</h4>
+                        <p>O sistema realiza a leitura automatizada da camada vetorial/raster de mineração assim que o produto for depositado no diretório <code>dados/originais/mapbiomas/</code>. Nenhum dado inventado ou estimativa fictícia é exibido pelo sistema.</p>
+                    </div>
+                    <div class="note-box">
+                        <h4>Critério Prudencial Acadêmico</h4>
+                        <p>Os cruzamentos produzem <strong>indícios técnicos objetivos</strong> de inconformidade territorial. A qualificação de ilicitude jurídica depende de auto de fiscalização e processo administrativo formal das autoridades minerais e ambientais competentes.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- RODAPÉ INSTITUCIONAL -->
+    <footer class="app-footer">
+        <div class="footer-inner">
+            <p><strong>Sistema de Fiscalização Minerária (SFM)</strong> · Tema 10 · Estudo Territorial de Parauapebas (PA)</p>
+            <p>Fontes Oficiais: Agência Nacional de Mineração (ANM / SIGMINE) · Instituto Brasileiro de Geografia e Estatística (IBGE 2025) · PostGIS 3.7</p>
+        </div>
+    </footer>
+
+    <!-- SCRIPTS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="/static/js/app.js?v=8.0" defer></script>
+</body>
+</html>

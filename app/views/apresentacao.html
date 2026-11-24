@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Fiscalização Minerária — Apresentação Institucional</title>
+    <link rel="stylesheet" href="/static/css/style.css?v=8.0">
+</head>
+<body>
+
+    <!-- TOPBAR INSTITUCIONAL -->
+    <header class="topbar">
+        <div class="topbar-inner">
+            <div class="brand">
+                <span class="brand-badge">SFM</span>
+                <div class="brand-info">
+                    <h1 class="brand-title">Sistema de Fiscalização Minerária</h1>
+                    <span class="brand-subtitle">Tema 10 · Fiscalização de lavra fora da poligonal autorizada</span>
+                </div>
+            </div>
+
+            <nav class="nav-menu">
+                <a href="/" class="nav-item active">Apresentação</a>
+                <a href="/sistema" class="nav-item">Ambiente Operacional</a>
+                <a href="#metodologia" class="nav-item nav-anchor">Metodologia</a>
+                <a href="#arquitetura" class="nav-item nav-anchor">Arquitetura</a>
+            </nav>
+
+            <div class="topbar-meta">
+                <a href="/sistema" class="btn btn-primary btn-sm">Abrir Sistema →</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="main-container">
+
+        <!-- HERO BOX INSTITUCIONAL -->
+        <section class="hero-box">
+            <span class="hero-tag">Projeto Acadêmico de Geoprocessamento · Tema 10</span>
+            <h1>Auditoria Territorial e Fiscalização de Lavra Mineral</h1>
+            <p>
+                Aplicação analítica espacial para detecção de indícios técnicos de desconformidades entre cicatrizes de mineração mapeadas por sensoriamento remoto e poligonais de processos minerários outorgados pela Agência Nacional de Mineração (ANM).
+            </p>
+
+            <div class="hero-metrics">
+                <div class="metric-card">
+                    <strong>1505536</strong>
+                    <span>Código IBGE Parauapebas/PA</span>
+                </div>
+                <div class="metric-card">
+                    <strong>24.445</strong>
+                    <span>Processos ANM no Pará</span>
+                </div>
+                <div class="metric-card">
+                    <strong>349</strong>
+                    <span>Processos Incidentes</span>
+                </div>
+                <div class="metric-card">
+                    <strong>431.912 ha</strong>
+                    <span>Área Única Titulada</span>
+                </div>
+            </div>
+
+            <div class="hero-buttons">
+                <a href="/sistema" class="btn-hero">Acessar Ambiente Operacional →</a>
+                <a href="#metodologia" class="btn-hero-sec">Conhecer Metodologia Técnica</a>
+            </div>
+        </section>
+
+        <!-- SEÇÃO METODOLOGIA -->
+        <section class="card" id="metodologia">
+            <div class="card-header">
+                <div>
+                    <h2>Fundamentação Técnica e Metodológica · Tema 10</h2>
+                    <span class="header-subtitle">Critérios espaciais de classificação de indícios de irregularidade</span>
+                </div>
+            </div>
+
+            <div class="methodology-content">
+                <div class="categories-row">
+                    <div class="cat-card cat-border-red">
+                        <div class="cat-pill pill-red">Categoria A</div>
+                        <h3>Área minerada fora da poligonal</h3>
+                        <p>Extração mineral identificada em imagens de satélite fora de qualquer título ou concessão outorgada pela ANM. Ausência de qualquer processo minerário correspondente à localização da atividade detectada.</p>
+                    </div>
+
+                    <div class="cat-card cat-border-amber">
+                        <div class="cat-pill pill-amber">Categoria B</div>
+                        <h3>Incompatibilidade de fase administrativa</h3>
+                        <p>Atividade minerária situada sobre processo em fase preliminar sem amparo legal de extração — ex.: Requerimento ou Autorização de Pesquisa (fase não habilita lavra).</p>
+                    </div>
+
+                    <div class="cat-card cat-border-slate">
+                        <div class="cat-pill pill-slate">Categoria C</div>
+                        <h3>Mineração sem título identificado</h3>
+                        <p>Atividades mapeadas em áreas públicas, reservas ou terras devolutas sem qualquer requerimento cadastrado no SIGMINE — indica atividade completamente informal.</p>
+                    </div>
+                </div>
+
+                <div class="technical-notes">
+                    <div class="note-box">
+                        <h4>Fontes Oficiais Integradas</h4>
+                        <p>A base cartográfica utiliza dados vetoriais oficiais do <strong>IBGE (Malha Municipal 2025)</strong> e do <strong>SIGMINE / ANM (Base Estadual do Pará)</strong> em SIRGAS 2000 (EPSG:4674), com cálculos métricos executados em projeção UTM Zone 22S (EPSG:31982).</p>
+                    </div>
+                    <div class="note-box">
+                        <h4>Critério Prudencial de Fiscalização</h4>
+                        <p>O sistema identifica <strong>indícios técnicos objetivos</strong>. Não declara automaticamente ilicitude jurídica — serve como instrumento preliminar de triagem para agentes de fiscalização ambiental e mineral (DNPM/ANM, SEMAS).</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEÇÃO ARQUITETURA -->
+        <section class="card" id="arquitetura">
+            <div class="card-header">
+                <div>
+                    <h2>Arquitetura e Segurança da Informação</h2>
+                    <span class="header-subtitle">Especificações técnicas de engenharia de software</span>
+                </div>
+            </div>
+
+            <div class="methodology-content">
+                <div class="categories-row">
+                    <div class="cat-card">
+                        <h3>Padrão MVC Rigoroso</h3>
+                        <p>Separação estrita entre Models (PostGIS/GeoPandas), Controllers (validação e sanitização) e Views (HTML, CSS e JavaScript puros).</p>
+                    </div>
+                    <div class="cat-card">
+                        <h3>Python 3.13 Puro</h3>
+                        <p>Sem dependência de frameworks web invasivos — servidor HTTP nativo da biblioteca padrão (stdlib), garantindo total transparência técnica.</p>
+                    </div>
+                    <div class="cat-card">
+                        <h3>Segurança em Camadas</h3>
+                        <p>Consultas parametrizadas contra SQL Injection, cabeçalhos de segurança (CSP, HSTS, X-Frame-Options), proteção contra Path Traversal e Rate Limiting.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- RODAPÉ INSTITUCIONAL -->
+    <footer class="app-footer">
+        <div class="footer-inner">
+            <p><strong>Sistema de Fiscalização Minerária (SFM)</strong> · Tema 10 · Estudo Territorial de Parauapebas (PA)</p>
+            <p>Engenharia de Software e Geoprocessamento · Projeto Acadêmico · Licença Acadêmica</p>
+        </div>
+    </footer>
+
+</body>
+</html>
